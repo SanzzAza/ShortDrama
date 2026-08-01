@@ -65,10 +65,10 @@ class BrowseViewModel : ViewModel() {
             val mallResult = repository.getBookMall()
             mallResult.fold(
                 onSuccess = { response ->
-                    val allItems = response.sections.flatMap { it.displayItems }
+                    val allItems = response.resolvedSections.flatMap { section -> section.displayItems }
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        sections = response.sections.filter { it.displayItems.isNotEmpty() },
+                        sections = response.resolvedSections.filter { section -> section.displayItems.isNotEmpty() },
                         allItems = allItems
                     )
                 },

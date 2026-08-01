@@ -38,7 +38,7 @@ data class DramaItem(
         get() = coverUrl.ifBlank { cover.ifBlank { thumbnail.ifBlank { verticalCover.ifBlank { horizontalCover } } } }
     
     val displayEpisodes: Int
-        get() = if (episodeCount > 0) episodeCount else episodes.ifZero { totalEpisodes }
+        get() = if (episodeCount > 0) episodeCount else episodes.ifZero(totalEpisodes)
 }
 
 private fun Int.ifZero(replacement: Int): Int = if (this == 0) replacement else this

@@ -39,7 +39,7 @@ class HomeViewModel : ViewModel() {
             val result = repository.getBookMall()
             result.fold(
                 onSuccess = { response ->
-                    val allItems = response.sections.flatMap { it.displayItems }
+                    val allItems = response.resolvedSections.flatMap { section -> section.displayItems }
                     val banners = response.banners.ifEmpty {
                         allItems.take(5)
                     }
@@ -77,7 +77,7 @@ class HomeViewModel : ViewModel() {
     ): List<DramaItem> {
         return sections.firstOrNull { section ->
             val name = (section.title.ifBlank { section.name }).lowercase()
-            keywords.any { name.contains(it) }
+            keywords.any { keyword -> name.contains(keyword) }
         }?.displayItems ?: emptyList()
     }
 
