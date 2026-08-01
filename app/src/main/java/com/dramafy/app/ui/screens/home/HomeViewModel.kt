@@ -45,7 +45,7 @@ class HomeViewModel : ViewModel() {
                     }
 
                     // Extract sections from response
-                    val sections = response.sections
+                    val sections = response.resolvedSections
 
                     // Try to identify section types by name/title
                     val trending = findSectionItems(sections, listOf("trending", "popular", "hot", "trending now"))

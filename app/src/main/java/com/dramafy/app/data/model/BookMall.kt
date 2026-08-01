@@ -35,10 +35,10 @@ data class BookMallSection(
 
 data class BookMallResponse(
     @SerializedName("data") val data: List<BookMallSection> = emptyList(),
-    @SerializedName("sections") val sections: List<BookMallSection> = emptyList(),
+    @SerializedName("sections") val apiSections: List<BookMallSection> = emptyList(),
     @SerializedName("banners") val banners: List<DramaItem> = emptyList(),
     @SerializedName("error") val error: String? = null
 ) {
-    val sections: List<BookMallSection>
-        get() = data.ifEmpty { sections }
+    val resolvedSections: List<BookMallSection>
+        get() = data.ifEmpty { apiSections }
 }
