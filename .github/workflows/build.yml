@@ -1,5 +1,8 @@
 name: Build APK
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: [ "main" ]
@@ -63,16 +66,18 @@ jobs:
         path: app/build/outputs/apk/release/app-release.apk
 
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
+      uses: ncipollo/release-action@v1
       with:
         name: DramaFy Build ${{ github.run_number }}
-        tag_name: build-${{ github.run_number }}
+        tag: build-${{ github.run_number }}
         body: |
-          DramaFy Short Drama App Build
-          - Build number: ${{ github.run_number }}
+          DramaFy Short Drama App
+          - Build: ${{ github.run_number }}
           - Commit: ${{ github.sha }}
-        files: |
+        artifacts: |
           app/build/outputs/apk/debug/app-debug.apk
           app/build/outputs/apk/release/app-release.apk
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        allowUpdates: true
+        omitDraftDuringUpdate: true
+        omitPrereleaseDuringUpdate: true
+        token: ${{ secrets.GITHUB_TOKEN }}
