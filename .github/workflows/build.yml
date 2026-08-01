@@ -34,7 +34,6 @@ jobs:
 
     - name: Build and Sign Release APK
       run: |
-        # Generate keystore
         mkdir -p /tmp/keystore
         keytool -genkeypair -v -storetype PKCS12 \
           -keystore /tmp/keystore/release.keystore \
@@ -43,14 +42,11 @@ jobs:
           -storepass android -keypass android \
           -dname "CN=SanzzAza, OU=DramaFy, O=DramaFy, L=Jakarta, S=Jakarta, C=ID"
 
-        # Build release APK
         ./gradlew assembleRelease --info --stacktrace
 
-        # Copy unsigned to signed location
         cp app/build/outputs/apk/release/app-release-unsigned.apk \
            app/build/outputs/apk/release/app-release.apk
 
-        # Sign the APK
         jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
           -keystore /tmp/keystore/release.keystore \
           -storepass android \
@@ -58,7 +54,6 @@ jobs:
           app/build/outputs/apk/release/app-release.apk \
           dramafy
 
-        echo "Release APK signed successfully!"
         ls -la app/build/outputs/apk/release/
 
     - name: Upload Signed Release APK
@@ -67,23 +62,17 @@ jobs:
         name: DramaFy-release-signed
         path: app/build/outputs/apk/release/app-release.apk
 
-    - name: Auto Release on Push
+    - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
-        name: DramaFy v${{ github.run_number }}
-        tag_name: v${{ github.run_number }}
+        name: DramaFy Build ${{ github.run_number }}
+        tag_name: build-${{ github.run_number }}
         body: |
-           DramaFy Short Drama App
-          
-          **Build #${{ github.run_number }}**
+          DramaFy Short Drama App Build
+          - Build number: ${{ github.run_number }}
           - Commit: ${{ github.sha }}
-          - Date: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
-          
-          ⚠️ Download **DramaFy-debug** or **DramaFy-release-signed** artifacts to install
         files: |
           app/build/outputs/apk/debug/app-debug.apk
           app/build/outputs/apk/release/app-release.apk
-        draft: false
-        prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
